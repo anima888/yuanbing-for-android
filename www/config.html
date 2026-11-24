@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>yuanbing for Android · 控制台</title>
+<link rel="stylesheet" href="config.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <span class="orb"></span>
+    <div>
+      <h1>yuanbing for Android</h1>
+      <p>局域网控制台 · 基于 Emotion Ball 二创 · 手机实时同步</p>
+    </div>
+  </div>
+  <div class="conn">
+    <span class="dot" id="connDot"></span>
+    <span id="connText">连接中…</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="preview-card">
+    <div class="preview-head">
+      <span>实时预览</span>
+      <span class="muted" id="previewNote">和手机端同一套渲染</span>
+    </div>
+    <div class="preview-stage">
+      <iframe id="preview" src="index.html?preview=1" title="yuanbing for Android 预览"></iframe>
+      <div class="preview-shade"></div>
+    </div>
+    <p class="tip">预览里的小球会自己走动；改完设置会立刻同步到手机，不需要数据线。</p>
+    <div class="url-line">
+      <span>手机上的配置页地址</span>
+      <code id="pageUrl">—</code>
+    </div>
+  </section>
+
+  <section class="panel">
+
+    <div class="group">
+      <div class="group-title"><h2>球体</h2><span class="hint">大小按屏幕短边自适应</span></div>
+      <label class="row">
+        <span>球的大小</span>
+        <input type="range" id="ballScale" min="0.28" max="0.80" step="0.01">
+        <output id="ballScaleOut">60%</output>
+        <input type="number" id="ballScaleNum" class="range-num" min="1" max="80" step="1" placeholder="%">
+      </label>
+      <label class="row">
+        <span>移动速度</span>
+        <input type="range" id="speed" min="0" max="5" step="0.05">
+        <output id="speedOut">1.0×</output>
+        <input type="number" id="speedNum" class="range-num" min="0" max="99" step="0.1" placeholder="×">
+      </label>
+      <label class="row">
+        <span>光晕强度</span>
+        <input type="range" id="glow" min="0" max="1.5" step="0.05">
+        <output id="glowOut">1.0×</output>
+        <input type="number" id="glowNum" class="range-num" min="0" max="3" step="0.05" placeholder="×">
+      </label>
+      <label class="row">
+        <span>小球数量</span>
+        <input type="range" id="balls" min="1" max="10" step="1">
+        <output id="ballsOut">1 只</output>
+        <input type="number" id="ballsNum" class="range-num" min="1" max="20" step="1" placeholder="只">
+      </label>
+      <p class="hint">为保持流畅并照顾手机性能，小球实际出现的数量做了上限保护。</p>
+      <label class="row">
+        <span>给它起名</span>
+        <input type="text" id="petName" maxlength="18" placeholder="不填就是无名小球" class="text-input">
+      </label>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><h2>音效</h2><span class="hint">可只用内置，也能每个上传自己的声音</span></div>
+      <label class="switch-row"><input type="checkbox" id="soundOn"> 开启软萌音效</label>
+      <label class="row compact"><span>音量</span><input type="range" id="soundVolume" min="0" max="1" step="0.05"><output id="soundVolumeOut">55%</output><input type="number" id="soundVolumeNum" class="range-num" min="0" max="100" step="1" placeholder="%"></label>
+      <div class="sound-list" id="soundList"></div>
+      <p class="tip">支持 mp3 / wav / ogg / m4a，单个不超过 4MB；不上传时使用内置合成音。</p>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><h2>气泡</h2><span class="hint">低频才可爱，默认关闭</span></div>
+      <label class="switch-row"><input type="checkbox" id="bubblesOn"> 偶尔冒一句台词</label>
+      <div class="row two">
+        <label><span>最短</span><input type="number" id="bubbleMin" min="1" max="120" step="1"><em>分钟</em></label>
+        <label><span>最长</span><input type="number" id="bubbleMax" min="2" max="240" step="1"><em>分钟</em></label>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><h2>换脸节奏</h2><span class="hint">25–45 秒是默认值</span></div>
+      <div class="row two">
+        <label><span>最短</span><input type="number" id="faceMin" min="5" max="300" step="1"><em>秒</em></label>
+        <label><span>最长</span><input type="number" id="faceMax" min="5" max="600" step="1"><em>秒</em></label>
+      </div>
+      <p class="tip">每次换脸时颜色和眼型一起换；停留期间颜色不会渐变。</p>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><h2>颜色</h2><span class="hint">每次出现从下面随机挑一种</span></div>
+      <div id="palette" class="palette"></div>
+      <button class="ghost" id="addColor" type="button">+ 添加颜色</button>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><h2>眼型</h2><span class="hint">至少选一种才能同步；点眼睛名字可单独预览</span></div>
+      <div class="styles" id="styles"></div>
+      <div class="mini-actions">
+        <button class="ghost" id="allStyles" type="button">全选</button>
+        <button class="ghost" id="noneStyles" type="button">全不选</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><h2>自定义眼睛</h2><span class="hint">PNG 透明底效果最好</span></div>
+      <p class="tip">建议 <b>512×512 正方形透明底 PNG</b>，画一只眼睛即可；上传后会缩放到 512×512，右眼可选镜像。</p>
+      <div class="upload-row">
+        <label class="upload-btn">
+          <input type="file" id="eyeFile" accept="image/png,image/jpeg,image/webp">
+          <span>上传一只眼睛的图</span>
+        </label>
+        <button class="ghost" id="clearEyes" type="button">移除</button>
+      </div>
+      <div class="eye-preview" id="eyePreview" hidden>
+        <img id="eyeThumb" alt="">
+        <div>
+          <p id="eyeName">自定义眼睛</p>
+          <label class="row compact">
+            <span>大小</span>
+            <input type="range" id="eyeScale" min="0.4" max="2.5" step="0.05">
+            <output id="eyeScaleOut">1.0×</output>
+            <input type="number" id="eyeScaleNum" class="range-num" min="0.1" max="3" step="0.05" placeholder="×">
+          </label>
+          <label class="row compact">
+            <span>眼距</span>
+            <input type="range" id="eyeGap" min="0.4" max="2" step="0.05">
+            <output id="eyeGapOut">1.0×</output>
+            <input type="number" id="eyeGapNum" class="range-num" min="0.1" max="3" step="0.05" placeholder="×">
+          </label>
+          <label class="check"><input type="checkbox" id="eyeMirror"> 右眼镜像同一张图</label>
+        </div>
+      </div>
+      <p class="tip">上传后会盖住内置眼型；眨眼、戳一戳闭单眼仍然有效。</p>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><h2>背景</h2><span class="hint">纯色或整张图片</span></div>
+      <p class="tip">建议 <b>1920×1080 横图</b>（或与手机同比例），JPG/PNG；上传会压到 1920×1080，单张 ≤8 MB。</p>
+      <div class="row">
+        <span>底色</span>
+        <input type="color" id="bgColor" value="#000000">
+        <span class="muted">没有图片时使用</span>
+      </div>
+      <div class="upload-row">
+        <label class="upload-btn">
+          <input type="file" id="bgFile" accept="image/png,image/jpeg,image/webp">
+          <span>上传背景图</span>
+        </label>
+        <button class="ghost" id="clearBg" type="button">移除图片</button>
+      </div>
+      <div class="bg-preview" id="bgPreview" hidden>
+        <img id="bgThumb" alt="">
+        <div>
+          <p id="bgName">背景图</p>
+          <label class="row compact">
+            <span>压暗</span>
+            <input type="range" id="bgDim" min="0" max="0.9" step="0.05">
+            <output id="bgDimOut">25%</output>
+            <input type="number" id="bgDimNum" class="range-num" min="0" max="100" step="1" placeholder="%">
+          </label>
+          <label class="row compact">
+            <span>模糊</span>
+            <input type="range" id="bgBlur" min="0" max="20" step="1">
+            <output id="bgBlurOut">0px</output>
+            <input type="number" id="bgBlurNum" class="range-num" min="0" max="50" step="1" placeholder="px">
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><h2>配饰</h2><span class="hint">叠在球上，不用换脸</span></div>
+      <p class="tip">自定义配饰建议 <b>512×512 透明底 PNG</b>，主体居中、四周留一点空；上传后会缩放到 512×512。</p>
+      <div class="checks" id="accessories"></div>
+      <div class="acc-actions"><span>自定义配饰</span><button class="ghost" id="accUpload" type="button">上传图片</button><button class="ghost" id="accRemove" type="button">移除</button><input type="file" id="accFile" accept="image/png,image/jpeg,image/webp" hidden></div>
+      <div class="row"><span>位置 X</span><input type="range" id="accX" min="0" max="100" step="1"><output id="accXOut">50%</output><input type="number" id="accXNum" class="range-num" min="0" max="100" step="1" placeholder="%"></div>
+      <div class="row"><span>位置 Y</span><input type="range" id="accY" min="0" max="100" step="1"><output id="accYOut">20%</output><input type="number" id="accYNum" class="range-num" min="0" max="100" step="1" placeholder="%"></div>
+      <div class="row"><span>大小</span><input type="range" id="accScale" min="5" max="100" step="1"><output id="accScaleOut">30%</output><input type="number" id="accScaleNum" class="range-num" min="5" max="100" step="1" placeholder="%"></div>
+      <div class="row"><span>旋转</span><input type="range" id="accRotate" min="-180" max="180" step="1"><output id="accRotateOut">0°</output><input type="number" id="accRotateNum" class="range-num" min="-180" max="180" step="1" placeholder="°"></div>
+      <p class="tip" id="accState">未上传自定义配饰</p>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><h2>小挂件</h2><span class="hint">默认关闭，保持画面只有球</span></div>
+      <label class="switch-row"><input type="checkbox" id="widgetOn"> 显示时间 / 日期 / 电量（右下角）</label>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><h2>作息与电量</h2><span class="hint">三项都可以单独关掉</span></div>
+      <label class="switch-row"><input type="checkbox" id="nightOn"> 夜间自动调暗、犯困（摸一下会醒）</label>
+      <div class="row two compact-times" id="nightTimes">
+        <label><span>从</span><input type="number" id="nightStart" min="0" max="23" step="1"><em>点</em></label>
+        <label><span>到</span><input type="number" id="nightEnd" min="0" max="23" step="1"><em>点</em></label>
+        <label><span>亮度</span><input type="number" id="nightBright" min="0.05" max="0.5" step="0.01"><em></em></label>
+      </div>
+      <label class="switch-row"><input type="checkbox" id="batteryOn"> 充电时开心、满电犯困、低电量没精神</label>
+      <label class="switch-row"><input type="checkbox" id="idleSleepOn"> 3 分钟没人理就打瞌睡</label>
+      <label class="row compact"><span>打瞌睡等待</span><input type="range" id="idleAfter" min="1" max="30" step="1"><output id="idleAfterOut">3 分钟</output><input type="number" id="idleAfterNum" class="range-num" min="1" max="1440" step="1" placeholder="分"></label>
+      <label class="switch-row"><input type="checkbox" id="sensorOn"> 拿起、翻转、摇晃时给反应</label>
+      <label class="switch-row"><input type="checkbox" id="burnInOn"> 防烧屏像素偏移（OLED 长时间显示推荐开启）</label>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><h2>主题与分享</h2><span class="hint">一键换一整套，也可以把配置发给朋友</span></div>
+      <div class="themes" id="themes"></div>
+      <div class="share-row">
+        <button class="ghost" id="copyCode" type="button">复制主题码</button>
+        <button class="ghost" id="importCode" type="button">导入主题码</button>
+        <button class="ghost" id="postcard" type="button">保存明信片</button>
+        <button class="ghost" id="exportCfg" type="button">导出配置</button>
+        <button class="ghost" id="importCfg" type="button">导入配置</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+      <p class="tip" id="shareState">主题码包含颜色、眼型、配饰和背景图地址；换手机时图片需要重新上传。</p>
+    </div>
+
+    <div class="group actions">
+      <button class="primary" id="saveBtn" type="button">保存并同步</button>
+      <button class="ghost" id="undoBtn" type="button">撤销本次修改</button>
+      <button class="ghost" id="resetBtn" type="button">恢复默认</button>
+      <span class="save-state" id="saveState"></span>
+    </div>
+
+  </section>
+</main>
+
+<footer class="foot">
+  <span>手机和电脑需要连同一个 Wi-Fi</span>
+  <span>配置保存在手机上，电脑关机也不影响桌搭</span>
+</footer>
+
+<script src="config.js"></script>
+</body>
+</html>

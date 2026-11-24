@@ -1,0 +1,16 @@
+# Build output and local toolchain
+build/
+signing/
+tools/
+*.jks
+*.keystore
+
+# Local test artifacts
+shots/
+*.log
+.DS_Store
+Thumbs.db
+
+# Python / Node caches (if any helper scripts are added later)
+__pycache__/
+node_modules/
