@@ -175,15 +175,16 @@ bash build.sh
 ## 还原 / 卸载
 
 ```bash
-adb shell cmd package set-home-activity net.oneplus.launcher/.Launcher
+# 把 <桌面组件> 换成你手机原来的桌面（例如 com.android.launcher3/.Launcher）
+adb shell cmd package set-home-activity <桌面组件>
 adb uninstall com.emotionball.desk
 ```
 
-或在「设置 → 应用 → 默认应用 → 桌面」里改回一加桌面，再卸载。没有 root、没有改系统分区、没有改开机流程；所有效果都在普通 App 权限内。
+或在「设置 → 应用 → 默认应用 → 桌面」里改回系统桌面，再卸载。没有 root、没有改系统分区、没有改开机流程；所有效果都在普通 App 权限内。
 
 ## 已知限制
 
-- 重启后如果仍看到一加的滑动锁屏，向上滑一次即可；App 会尽量自己盖过去，但不同 ROM 行为略有差异。
+- 部分 ROM 重启后可能仍显示滑动锁屏，向上滑一次即可；App 会尽量自己盖过去，但不同 ROM 行为略有差异。
 - 音效走 Web Audio，首次触摸后才会启用（浏览器自动播放限制）；体感功能依赖设备加速度计。
 - 局域网控制台用随机 token 保护；把完整地址发给别人，对方就能打开。token 重启后会变。
 - 声音、体感、双指缩放目前以代码/合成触摸测试为主，尚未在所有机型上逐一实测。

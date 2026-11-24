@@ -1,2 +1,2 @@
 a852af59ebeb489ffd60a7ac627e92f8f9d1928d5e9329ea542fdee257a26e2b  dist/yuanbing-for-Android-v4.7.apk
-27c6d83aae0bfe0068f4e36130370402e07f265250f0def4211f245eac01d4cf  dist/yuanbing-for-Android-v4.7-release.zip
+3695c04c1c5dc08b44e9854e66c5e7b2a3d5d80e4d76637612b0b676baf7a43f  dist/yuanbing-for-Android-v4.7-release.zip
