@@ -18,7 +18,7 @@
 
 | 局域网控制台 | 手机控制台 |
 | --- | --- |
-| ![控制台](docs/console.png) | ![手机控制台](docs/console-mobile.png) |
+| ![控制台](docs/console.png?raw=true) | ![手机控制台](docs/console-mobile.png) |
 
 | 小挂件（默认关闭） | 夜间模式 |
 | --- | --- |
